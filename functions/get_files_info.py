@@ -8,7 +8,7 @@ def get_files_info(working_directory, directory=None):
     if working_directory_abs_path not in directory_abs_path :
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
 
-    elif os.path.isfile(directory_abs_path ):
+    elif os.path.isfile(directory_abs_path):
         return f'Error: "{directory}" is not a directory'
 
     else:
