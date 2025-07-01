@@ -5,6 +5,7 @@ from google.genai import types
 import sys
 from functions.get_files_info import schema_get_files_info
 from functions.get_file_content import schema_get_file_content
+from functions.run_python_file import schema_run_python_file
 
 def main():
     load_dotenv()
@@ -16,6 +17,7 @@ def main():
 
         - List files and directories
         - Read file contents
+        - Execute Python files with optional arguments
 
         All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
         """
@@ -40,7 +42,8 @@ def main():
     available_functions = types.Tool(
         function_declarations=[
             schema_get_files_info,
-            schema_get_file_content
+            schema_get_file_content,
+            schema_run_python_file
         ]
     )  
 
