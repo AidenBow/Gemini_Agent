@@ -3,10 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import sys
-from functions.get_files_info import schema_get_files_info
-from functions.get_file_content import schema_get_file_content
-from functions.run_python_file import schema_run_python_file
-from functions.write_file import schema_write_file
+from call_function import available_functions, call_function
 
 def main():
     load_dotenv()
@@ -41,15 +38,6 @@ def main():
     api_key = os.environ.get("GEMINI_API_KEY")
     client = genai.Client(api_key = api_key)
 
-    available_functions = types.Tool(
-        function_declarations=[
-            schema_get_files_info,
-            schema_get_file_content,
-            schema_run_python_file,
-            schema_write_file
-        ]
-    )  
-
     content = client.models.generate_content(
         model="gemini-2.0-flash-001", 
         contents=messages,
@@ -61,9 +49,11 @@ def main():
 
     if not content.function_calls: #this prevents a warning from non-text items created by function calls
         print(content.text)
+    else:
+        for function_call_part in content.function_calls:
+            print(call_function(function_call_part, True))
 
-    for function_call_part in content.function_calls:
-        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    
 
     if verbose:
         print(f"User prompt: {user_prompt}")
