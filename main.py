@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import sys
+from functions.get_files_info import schema_get_files_info
 
 def main():
     load_dotenv()
@@ -34,20 +35,6 @@ def main():
     api_key = os.environ.get("GEMINI_API_KEY")
     client = genai.Client(api_key = api_key)
 
-    schema_get_files_info = types.FunctionDeclaration(
-        name="get_files_info",
-        description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
-        parameters=types.Schema(
-            type=types.Type.OBJECT,
-            properties={
-                "directory": types.Schema(
-                    type=types.Type.STRING,
-                    description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
-                ),
-            },
-        ),
-    )
-
     available_functions = types.Tool(
         function_declarations=[
             schema_get_files_info,
@@ -62,11 +49,12 @@ def main():
             system_instruction=system_prompt
         )
     )
-    
+
+    if not content.function_calls: #this prevents a warning from non-text items created by function calls
+        print(content.text)
+
     for function_call_part in content.function_calls:
         print(f"Calling function: {function_call_part.name}({function_call_part.args})")
-
-    print(content.text)
 
     if verbose:
         print(f"User prompt: {user_prompt}")
