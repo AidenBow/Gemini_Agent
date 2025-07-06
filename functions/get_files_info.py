@@ -1,7 +1,7 @@
 import os
 from google.genai import types
 
-def get_files_info(working_directory, directory=None):
+def get_files_info(working_directory, directory=""):
 
     directory_abs_path = os.path.abspath(os.path.join(working_directory, directory))
     working_directory_abs_path = os.path.abspath(working_directory)
@@ -13,9 +13,11 @@ def get_files_info(working_directory, directory=None):
         return f'Error: "{directory}" is not a directory'
 
     else:
-        print(f"listing {directory_abs_path} ...")
+        results = []
+        #print(f"listing {directory_abs_path} ...")
         for item in os.listdir(directory_abs_path):
-            print(f"- {item}: file_size={os.path.getsize(os.path.join(directory_abs_path, item))} bytes, is_dir={os.path.isdir(os.path.join(directory_abs_path, item))}")
+            results.append(f"- {item}: file_size={os.path.getsize(os.path.join(directory_abs_path, item))} bytes, is_dir={os.path.isdir(os.path.join(directory_abs_path, item))}")
+        return results
 
 schema_get_files_info = types.FunctionDeclaration(
     name="get_files_info",

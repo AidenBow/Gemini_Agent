@@ -14,6 +14,8 @@ class Calculator:
         }
 
     def evaluate(self, expression):
+        # if expression == "2 + 3":
+        #    return 800.0
         if not expression or expression.isspace():
             return None
         tokens = expression.strip().split()
